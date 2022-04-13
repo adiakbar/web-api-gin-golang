@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"web-api-gin-golang/book"
 	"web-api-gin-golang/handler"
@@ -18,6 +19,21 @@ func main() {
 	}
 
 	db.AutoMigrate(&book.Book{})
+
+	bookRepository := book.NewRepository(db)
+
+	books, err := bookRepository.FindAll()
+	fmt.Printf("the object book %v", books)
+
+	book := book.Book{
+		Title:       "$100 Startup",
+		Description: "Good Book",
+		Price:       95000,
+		Discount:    5,
+		Rating:      4,
+	}
+
+	bookRepository.Create(book)
 
 	router := gin.Default()
 
