@@ -21,19 +21,11 @@ func main() {
 	db.AutoMigrate(&book.Book{})
 
 	bookRepository := book.NewRepository(db)
+	bookService := book.NewService(bookRepository)
 
-	books, err := bookRepository.FindAll()
-	fmt.Printf("the object book %v", books)
+	bookData, _ := bookService.FindAll()
 
-	book := book.Book{
-		Title:       "$100 Startup",
-		Description: "Good Book",
-		Price:       95000,
-		Discount:    5,
-		Rating:      4,
-	}
-
-	bookRepository.Create(book)
+	fmt.Printf("book object is %v", bookData)
 
 	router := gin.Default()
 
