@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"web-api-gin-golang/book"
 	"web-api-gin-golang/handler"
 
@@ -27,12 +28,25 @@ func main() {
 
 	v1 := router.Group("/v1")
 
-	v1.GET("/", handler.RootHandler)
-	v1.GET("/hello", handler.HelloHandler)
-	v1.GET("/books/:id", bookHandler.BooksHandler)
-	v1.GET("/query", bookHandler.QueryHandler)
+	v1.GET("/", rootHandler)
+	v1.GET("/query", queryHandler)
 
-	v1.POST("/books", bookHandler.PostBooksHandler)
+	v1.GET("/books", bookHandler.GetAllBooks)
+	v1.GET("/books/:id", bookHandler.GetBooksById)
+	v1.POST("/books", bookHandler.CreateBooks)
 
 	router.Run(":8888")
+}
+
+func rootHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"name": "Adi Akbar",
+		"bio":  "A Software Engineer",
+	})
+}
+
+func queryHandler(c *gin.Context) {
+	title := c.Query("title")
+
+	c.JSON(http.StatusOK, gin.H{"title": title})
 }

@@ -18,33 +18,27 @@ func NewBookHandler(bookService book.Service) *bookHandler {
 	return &bookHandler{bookService}
 }
 
-func RootHandler(c *gin.Context) {
+func (h *bookHandler) GetAllBooks(c *gin.Context) {
+	books, err := h.bookService.FindAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"name": "Adi Akbar",
-		"bio":  "A Software Engineer",
+		"data": books,
 	})
 }
 
-func HelloHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"title":    "Hello World",
-		"subtitle": "Belajar Golang bareng Youtube Agung Setiawan",
-	})
-}
-
-func (h *bookHandler) BooksHandler(c *gin.Context) {
+func (h *bookHandler) GetBooksById(c *gin.Context) {
 	id := c.Param("id")
 
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
-func (h *bookHandler) QueryHandler(c *gin.Context) {
-	title := c.Query("title")
-
-	c.JSON(http.StatusOK, gin.H{"title": title})
-}
-
-func (h *bookHandler) PostBooksHandler(c *gin.Context) {
+func (h *bookHandler) CreateBooks(c *gin.Context) {
 	var BookRequest book.BookRequest
 
 	err := c.ShouldBindJSON(&BookRequest)
