@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"web-api-gin-golang/book"
 
@@ -47,10 +48,28 @@ func (h *bookHandler) GetAllBooks(c *gin.Context) {
 	})
 }
 
-func (h *bookHandler) GetBooksById(c *gin.Context) {
-	id := c.Param("id")
+func (h *bookHandler) GetBookById(c *gin.Context) {
+	idString := c.Param("id")
+	id, _ := strconv.Atoi(idString)
 
-	c.JSON(http.StatusOK, gin.H{"id": id})
+	b, err := h.bookService.FindByID(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
+	bookResponse := book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Price:       b.Price,
+		Description: b.Description,
+		Rating:      b.Rating,
+		Discount:    b.Discount,
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": bookResponse})
 }
 
 func (h *bookHandler) CreateBooks(c *gin.Context) {
