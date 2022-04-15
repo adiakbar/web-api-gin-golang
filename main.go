@@ -33,7 +33,8 @@ func main() {
 
 	v1.GET("/books", bookHandler.GetAllBooks)
 	v1.GET("/books/:id", bookHandler.GetBookById)
-	v1.POST("/books", bookHandler.CreateBooks)
+	v1.POST("/books", bookHandler.CreateBook)
+	v1.PUT("/books/:id", bookHandler.UpdateBook)
 
 	router.Run(":8888")
 }
